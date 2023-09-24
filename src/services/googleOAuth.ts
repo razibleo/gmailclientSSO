@@ -2,7 +2,7 @@ import {
   GMAIL_SCOPES,
   accessTokenFile,
   oAuth2Client,
-} from "../config/googleAuth.js";
+} from "../config/googleOAuth.js";
 import open from "open";
 import AccessToken from "../models/accesstoken.js";
 import fs from "fs";

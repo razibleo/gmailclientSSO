@@ -1,7 +1,7 @@
 import MailComposer from "nodemailer/lib/mail-composer/index.js";
 import { MailOptions } from "../models/typehelpers.js";
 import { google } from "googleapis";
-import { oAuth2Client } from "../config/googleAuth.js";
+import { oAuth2Client } from "../config/googleOAuth.js";
 
 async function createMail(options: MailOptions) {
   const mailComposer = new MailComposer(options);
