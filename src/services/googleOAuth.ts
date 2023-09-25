@@ -6,8 +6,9 @@ import {
 import open from "open";
 import AccessToken from "../models/accesstoken.js";
 import fs from "fs";
+import { google } from "googleapis";
 
-async function getAuthCode() {
+async function authenticate() {
   const url = oAuth2Client.generateAuthUrl({
     access_type: "offline",
     prompt: "consent",
@@ -22,8 +23,10 @@ function getStoredAuthToken(): AccessToken | undefined {
   return storedAccessToken;
 }
 async function verifyTokenAndSetCredentials(token: AccessToken) {
-  await oAuth2Client.getTokenInfo(token.access_token);
+  //better to do this the the catch block in the controller itself
   oAuth2Client.setCredentials(token);
+
+  await oAuth2Client.refreshAccessToken();
 }
 
 async function getTokenFromAuthCodeAndStore(code: string) {
@@ -32,7 +35,7 @@ async function getTokenFromAuthCodeAndStore(code: string) {
   fs.writeFileSync(accessTokenFile, JSON.stringify(token.tokens));
 }
 export default {
-  getAuthCode,
+  authenticate,
   getStoredAuthToken,
   verifyTokenAndSetCredentials,
   getTokenFromAuthCodeAndStore,

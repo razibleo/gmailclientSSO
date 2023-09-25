@@ -2,6 +2,8 @@ import MailComposer from "nodemailer/lib/mail-composer/index.js";
 import { MailOptions } from "../models/typehelpers.js";
 import { google } from "googleapis";
 import { oAuth2Client } from "../config/googleOAuth.js";
+import fs from "fs";
+import path from "path";
 
 async function createMail(options: MailOptions) {
   const mailComposer = new MailComposer(options);
@@ -15,7 +17,14 @@ async function createMail(options: MailOptions) {
 
 async function sendEmail({ mailOptions }: { mailOptions: MailOptions }) {
   const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
-  const rawMessage = await createMail(mailOptions);
+
+  const rawMessage = await createMail({
+    ...mailOptions,
+    html: `${mailOptions.html}${fs.readFileSync(
+      path.join("src/views/signature.html")
+    )}`,
+  });
+
   const result = await gmail.users.messages.send({
     userId: "me",
     requestBody: { raw: rawMessage },
